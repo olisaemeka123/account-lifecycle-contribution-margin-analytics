@@ -1,23 +1,45 @@
 models:
    - name: stg_transactions
      description: One row per transaction. Captures account volume and behavior signal.
+     tests:
+      - dbt_utils.equal_rowcount:
+          arguments:
+            compare_model: source('raw_alcm_analytics','transactions')
+
+
      columns:
       - name: transaction_id
         data_type: string
         description: id for each transaction. primary key
+        data_tests:
+          - unique
+          - not_null
 
       - name: account_id
         data_type: string
         description: foreign key referencing accounts
+        data_tests:
+            - relationships:
+                arguments:
+                  to: ref('stg_accounts')
+                  field: account_id
+                
+            - not_null
 
       - name: transaction_date
         data_type: date
         description: date each transaction took place
+        data_tests:
+          - not_null
 
       - name: transaction_type
         data_type: string
         description: definitive transaction type e.g purchase, direct_debit,atm_withdrawal etc
+        data_tests:
+          - not_null
 
       - name: amount
         data_type: numeric
         description: amount for each transaction
+        data_tests:
+          - not_null
