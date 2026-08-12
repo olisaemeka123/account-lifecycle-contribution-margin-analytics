@@ -1,0 +1,49 @@
+models:
+  - name: stg_fee_events
+    description: One row per fee charged. Revenue side of the contribution margin calculation.
+    tests:
+      - dbt_utils.equal_rowcount:
+          arguments:
+            compare_model: source('raw_alcm_analytics','fee_events')
+
+      
+    columns:
+        - name: fee_id
+          data_type: string
+          description: primary key
+          data_tests:
+            - not_null
+            - unique
+
+        - name: account_id
+          data_type: string
+          description: foreign key referencing which account_id is related to the fee amount
+          data_tests:
+            - relationships:
+                arguments:
+                  to: ref('stg_accounts')
+                  field: account_id
+                
+            - not_null
+
+        - name: fee_date
+          data_type: date
+          description: date each fee was earned
+          data_tests:
+            - not_null
+
+        - name: fee_type
+          data_type: string
+          description: relates to the type of fee eg. overdraft, subscription
+          data_tests:
+            - accepted_values:
+                arguments:
+                  values: ['overdraft','subscription']
+
+            - not_null
+
+        - name: fee_amount
+          data_type: numeric
+          description: amount of each fee
+          data_tests:
+            - not_null

@@ -1,0 +1,50 @@
+models:
+  - name: stg_account_status_history
+    description: One row per status or tier change event. Source for SCD Type 2 snapshot modeling.
+    tests:
+      - dbt_utils.equal_rowcount:
+          arguments:
+            compare_model: source('raw_alcm_analytics','account_status_history')
+
+    columns:
+      - name: account_id
+        data_type: string
+        description: primary key
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('stg_accounts')
+                field: account_id
+              
+          - not_null
+
+
+      - name: status
+        data_type: string
+        description: historical status of each account.it can be active,churned or dormant
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['active','churned','dormant']
+
+
+      - name: tier
+        data_type: string
+        description: historical tier of each account. it can be basic, premium or plus
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['Basic','Plus','Premium']
+
+      - name: effective_date
+        data_type: date
+        description: historical effective date for each account
+        data_tests:
+          - not_null
+
+  
+
+  
+
+  
+  

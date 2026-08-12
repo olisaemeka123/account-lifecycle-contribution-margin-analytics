@@ -1,0 +1,31 @@
+models:
+  - name: stg_daily_balances
+    description: One row per account per active day. Source for the incremental daily balances model.
+    tests:
+      - dbt_utils.equal_rowcount:
+          arguments:
+            compare_model: source('raw_alcm_analytics','daily_balances')
+
+    columns:
+      - name: account_id
+        data_type: string
+        description: primary key
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('stg_accounts')
+                field: account_id
+              
+          - not_null
+
+      - name: balance_date
+        data_type: date
+        description: date as at each incremental amount
+        data_tests:
+          - not_null
+
+      - name: balance_amount
+        data_type: numeric
+        description: incremental amount as at each date
+        data_tests:
+          - not_null

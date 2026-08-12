@@ -1,0 +1,43 @@
+models:
+  - name: stg_accounts
+    description: One row per account. Static identity attributes (account_id, customer_id, signup_date, current_status, current_tier)
+    tests:
+      - dbt_utils.equal_rowcount:
+          arguments:
+            compare_model: source('raw_alcm_analytics','accounts')
+
+    columns:
+      - name: account_id
+        data_type: string
+        description: primary key
+        data_tests:
+          - unique
+          - not_null
+
+      - name: customer_id
+        data_type: string
+        description: customer id
+        data_tests:
+          - not_null
+
+      - name: signup_date
+        data_type: date
+        description: Date each customer opened the account
+        data_tests:
+          - not_null
+
+      - name: current_status
+        data_type: string
+        description: status of each account.it can be active,churned or dormant
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['active','churned','dormant']
+
+      - name: current_tier
+        data_type: string
+        description: tier of each account. it can be basic, premium or plus
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['Basic','Plus','Premium']

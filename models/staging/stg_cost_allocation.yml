@@ -1,0 +1,20 @@
+models:
+  - name: stg_cost_allocation
+    description: cost allocated for each account tier
+    columns:
+        - name: tier
+          data_type: string
+          description: tier of each account. it can be basic, premium or plus
+          data_tests:
+          - accepted_values:
+              arguments:
+                values: ['Basic','Plus','Premium']
+
+          - unique
+
+
+        - name: monthly_cost_per_account
+          data_type: numeric
+          description: cost associated with each account tier
+          data_tests:
+            - not_null
