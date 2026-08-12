@@ -1,0 +1,23 @@
+models:
+   - name: stg_transactions
+     description: One row per transaction. Captures account volume and behavior signal.
+     columns:
+      - name: transaction_id
+        data_type: string
+        description: id for each transaction. primary key
+
+      - name: account_id
+        data_type: string
+        description: foreign key referencing accounts
+
+      - name: transaction_date
+        data_type: date
+        description: date each transaction took place
+
+      - name: transaction_type
+        data_type: string
+        description: definitive transaction type e.g purchase, direct_debit,atm_withdrawal etc
+
+      - name: amount
+        data_type: numeric
+        description: amount for each transaction

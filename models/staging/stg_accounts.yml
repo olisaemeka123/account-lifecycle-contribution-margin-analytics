@@ -1,0 +1,23 @@
+models:
+  - name: stg_accounts
+    description: One row per account. Static identity attributes (account_id, customer_id, signup_date, current_status, current_tier).
+    columns:
+      - name: account_id
+        data_type: string
+        description: primary key
+
+      - name: customer_id
+        data_type: string
+        description: unique customer id
+
+      - name: signup_date
+        data_type: date
+        description: Date each customer opened the account
+
+      - name: current_status
+        data_type: string
+        description: status of each account.it can be active,churned or dormant
+
+      - name: current_tier
+        data_type: string
+        description: tier of each account. it can be basic, premium or plus

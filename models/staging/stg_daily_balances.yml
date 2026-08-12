@@ -1,0 +1,15 @@
+models:
+  - name: stg_daily_balances
+    description: One row per account per active day. Source for the incremental daily balances model.
+    columns:
+      - name: account_id
+        data_type: string
+        description: primary key
+
+      - name: balance_date
+        data_type: date
+        description: date as at each incremental amount
+
+      - name: balance_amount
+        data_type: numeric
+        description: incremental amount as at each date

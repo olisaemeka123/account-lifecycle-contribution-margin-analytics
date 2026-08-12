@@ -1,0 +1,24 @@
+models:
+  - name: stg_fee_events
+    description: One row per fee charged. Revenue side of the contribution margin calculation.
+      
+    columns:
+        - name: fee_id
+          data_type: string
+          description: primary key
+
+        - name: account_id
+          data_type: string
+          description: foreign key referencing which account_id is related to the fee amount
+
+        - name: fee_date
+          data_type: date
+          description: date each fee was earned
+
+        - name: fee_type
+          data_type: string
+          description: relates to the type of fee eg. overdraft, subscription
+
+        - name: fee_amount
+          data_type: numeric
+          description: amount of each fee
