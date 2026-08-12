@@ -1,0 +1,21 @@
+sources:
+  - name: raw_alcm_analytics
+    description: A python generated dataset simulating real banking data for account lifecycle and contribution margin analysis. Loaded via bq load as all STRING; casting occurs in the staging layer.
+    database: evocative-depot-502412-m9
+    schema: raw_alcm_analytics
+    tables:
+      - name: accounts
+        description: One row per account. Static identity attributes (account_id, customer_id, signup_date, current_status, current_tier).
+
+      - name: account_status_history
+        description: One row per status or tier change event. Source for SCD Type 2 snapshot modeling.
+
+      - name: daily_balances
+        description: One row per account per active day. Source for the incremental daily balances model.
+
+      - name: transactions
+        description: One row per transaction. Captures account volume and behavior signal.
+
+      - name: fee_events
+        description: One row per fee charged. Revenue side of the contribution margin calculation.
+
