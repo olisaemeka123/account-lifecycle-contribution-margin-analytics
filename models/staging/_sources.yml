@@ -6,16 +6,41 @@ sources:
     tables:
       - name: accounts
         description: One row per account. Static identity attributes (account_id, customer_id, signup_date, current_status, current_tier).
+        config:
+          freshness:
+            warn_after: {count: 700, period: day}
+            error_after: {count: 900, period: day}
+          loaded_at_field: cast(signup_date as timestamp) 
 
       - name: account_status_history
         description: One row per status or tier change event. Source for SCD Type 2 snapshot modeling.
+        config:
+          freshness:
+            warn_after: {count: 700, period: day}
+            error_after: {count: 900, period: day}
+          loaded_at_field: cast(effective_date as timestamp) 
 
       - name: daily_balances
         description: One row per account per active day. Source for the incremental daily balances model.
+        config:
+          freshness:
+            warn_after: {count: 700, period: day}
+            error_after: {count: 900, period: day}
+          loaded_at_field: cast(balance_date as timestamp) 
 
       - name: transactions
         description: One row per transaction. Captures account volume and behavior signal.
+        config:
+          freshness:
+            warn_after: {count: 700, period: day}
+            error_after: {count: 900, period: day}
+          loaded_at_field: cast(transaction_date as timestamp) 
 
       - name: fee_events
         description: One row per fee charged. Revenue side of the contribution margin calculation.
+        config:
+          freshness:
+            warn_after: {count: 700, period: day}
+            error_after: {count: 900, period: day}
+          loaded_at_field: cast(fee_date as timestamp) 
 
