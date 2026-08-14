@@ -17,14 +17,14 @@ jobs:
         with:
           credentials_json: ${{ secrets.GCP_SA_KEY }}
 
-      - name: Install dbt Fusion
+       - name: Install dbt Fusion
         run: |
           curl -fsSL https://public.cdn.getdbt.com/fs/install/install.sh | sh -s -- --update
-          DBTF_DIR=$(dirname "$(find "$HOME" -maxdepth 5 -name dbtf -type f 2>/dev/null | head -n1)")
-          echo "$DBTF_DIR" >> "$GITHUB_PATH"
-          
+          DBT_DIR=$(dirname "$(find "$HOME" -maxdepth 5 -name dbt -type f 2>/dev/null | head -n1)")
+          echo "$DBT_DIR" >> "$GITHUB_PATH"
+
       - name: Install dbt packages
-        run: dbtf deps
+        run: dbt deps
 
       - name: Run dbt build
-        run: dbtf build
+        run: dbt build
