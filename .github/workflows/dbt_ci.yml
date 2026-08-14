@@ -20,7 +20,9 @@ jobs:
       - name: Install dbt Fusion
         run: |
           curl -fsSL https://public.cdn.getdbt.com/fs/install/install.sh | sh -s -- --update
-
+          DBTF_DIR=$(dirname "$(find "$HOME" -maxdepth 5 -name dbtf -type f 2>/dev/null | head -n1)")
+          echo "$DBTF_DIR" >> "$GITHUB_PATH"
+          
       - name: Install dbt packages
         run: dbtf deps
 
