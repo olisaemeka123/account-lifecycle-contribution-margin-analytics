@@ -26,5 +26,21 @@ jobs:
       - name: Install dbt packages
         run: dbt deps
 
+      - name: Create dbt profiles.yml
+        run: |
+          mkdir -p ~/.dbt
+          echo '${{ secrets.GCP_SA_KEY }}' > ~/.dbt/gcp-key.json
+          echo "alcm_analytics:" > ~/.dbt/profiles.yml
+          echo "  target: dev" >> ~/.dbt/profiles.yml
+          echo "  outputs:" >> ~/.dbt/profiles.yml
+          echo "    dev:" >> ~/.dbt/profiles.yml
+          echo "      type: bigquery" >> ~/.dbt/profiles.yml
+          echo "      threads: 16" >> ~/.dbt/profiles.yml
+          echo "      database: evocative-depot-502412-m9" >> ~/.dbt/profiles.yml
+          echo "      schema: raw_alcm_analytics" >> ~/.dbt/profiles.yml
+          echo "      method: service-account" >> ~/.dbt/profiles.yml
+          echo "      keyfile: /home/runner/.dbt/gcp-key.json" >> ~/.dbt/profiles.yml
+          echo "      location: europe-west2" >> ~/.dbt/profiles.yml
+
       - name: Run dbt build
         run: dbt build
