@@ -1,0 +1,68 @@
+models:
+  - name: fct_contribution_margin
+    description: 
+      One row per account per month, showing fee revenue, monthly cost
+      (by tier), and the resulting contribution margin. Built on top of
+      int_account_month_fees so every account has a complete monthly
+      series with no gaps for zero-fee months.
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - account_id
+              - month
+
+    columns:
+      - name: account_id
+        data_type: string
+        description: primary key component; account identifier
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_accounts')
+                field: account_id
+
+      - name: month
+        data_type: date
+        description: first day of the month
+        data_tests:
+          - not_null
+
+      - name: fee_revenue
+        data_type: numeric
+        description: total fee revenue for this account in this month
+        data_tests:
+          - not_null
+
+      - name: current_status
+        data_type: string
+        description: account's current lifecycle status
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['active', 'churned', 'dormant']
+
+      - name: current_tier
+        data_type: string
+        description: account's current tier, used to look up monthly cost
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['Basic', 'Plus', 'Premium']
+
+      - name: monthly_cost
+        data_type: numeric
+        description: fixed monthly cost to serve this account, by tier
+        data_tests:
+          - not_null
+
+      - name: contribution_margin
+        data_type: numeric
+        description: 
+          fee_revenue minus monthly_cost for this account and month,
+          calculated via the calculate_contribution_margin macro
+        data_tests:
+          - not_null
