@@ -1,0 +1,42 @@
+models:
+  - name: fct_account_activity
+    description: 
+      One row per account per month, showing transaction count and volume.
+      Reusable activity fact table. Deliberately excludes status/churn
+      context, which should be joined in at query time from snap_accounts
+      when needed.
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - account_id
+              - activity_month
+
+    columns:
+      - name: account_id
+        data_type: string
+        description: primary key component; account identifier
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_accounts')
+                field: account_id
+
+      - name: activity_month
+        data_type: date
+        description: first day of the month
+        data_tests:
+          - not_null
+
+      - name: transaction_count
+        data_type: int64
+        description: number of transactions for this account in this month
+        data_tests:
+          - not_null
+
+      - name: total_transaction_volume
+        data_type: numeric
+        description: sum of transaction amounts for this account in this month
+        data_tests:
+          - not_null

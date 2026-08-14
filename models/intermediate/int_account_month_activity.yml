@@ -1,0 +1,42 @@
+models:
+  - name: int_account_month_activity
+    description: 
+      One row per account per month, for every month in the account-month
+      grid. Aggregates stg_transactions to transaction_count and
+      total_transaction_volume, coalesced to 0 where no transactions
+      occurred that month.
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - account_id
+              - month
+
+    columns:
+      - name: account_id
+        data_type: string
+        description: primary key component; account identifier
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_accounts')
+                field: account_id
+
+      - name: month
+        data_type: date
+        description: first day of the month
+        data_tests:
+          - not_null
+
+      - name: transaction_count
+        data_type: int64
+        description: number of transactions for this account in this month
+        data_tests:
+          - not_null
+
+      - name: total_transaction_volume
+        data_type: numeric
+        description: sum of transaction amounts for this account in this month
+        data_tests:
+          - not_null
