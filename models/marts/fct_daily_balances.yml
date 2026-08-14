@@ -1,0 +1,42 @@
+models:
+  - name: fct_daily_balances
+    description: One row per account per active day. incremental daily balances model.
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - account_id
+              - balance_date
+
+    columns:
+      - name: account_id
+        data_type: string
+        description: primary key
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('stg_accounts')
+                field: account_id
+              
+          
+
+      - name: balance_date
+        data_type: date
+        description: balance date for the incremental load
+        data_tests:
+          - not_null
+
+
+      - name: balance_amount
+        data_type: numeric
+        description: incremental amount as at each date
+        data_tests:
+          - not_null
+
+      - name: current_tier
+        data_type: string
+        description: tier of each account. it can be basic, premium or plus
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['Basic','Plus','Premium']
