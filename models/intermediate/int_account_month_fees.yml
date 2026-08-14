@@ -1,0 +1,39 @@
+models:
+  - name: int_account_month_fees
+    description: 
+      One row per account per month, for every month in the account-month
+      grid (Jan 2024 - Mar 2025). Fills gaps left by fee_events, which only
+      contains rows for months an account actually had fee activity so
+      every account has a complete monthly series with fee_revenue coalesced
+      to 0 where no fees occurred that month.
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - account_id
+              - month
+
+    columns:
+      - name: account_id
+        data_type: string
+        description: primary key component; account identifier
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_accounts')
+                field: account_id
+
+      - name: month
+        data_type: date
+        description: first day of the month, generated via dbt_utils.date_spine
+        data_tests:
+          - not_null
+
+      - name: fee_revenue
+        data_type: numeric
+        description: 
+          total fee revenue for this account in this month, coalesced to 0
+          where the account had no fee events that month
+        data_tests:
+          - not_null
