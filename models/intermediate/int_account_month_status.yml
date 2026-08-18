@@ -1,0 +1,23 @@
+models:
+  - name: int_account_month_status
+    description: 
+      updated account status and tier per account,month. Resolves
+      the correct status/tier that was effective during each specific
+      month by matching against stg_account_status_history, rather than
+      using the account's current status (which fct_contribution_margin
+      and fct_daily_balances previously did via stg_accounts, causing
+      churned/dormant accounts to show incorrect costs in historical
+      months).
+    columns:
+      - name: account_id
+        description: Foreign key to accounts.
+        tests:
+          - not_null
+      - name: month
+        description: First day of the month this status/tier applied.
+        tests:
+          - not_null
+      - name: status
+        description: Account status as of this month (e.g. active, dormant, churned).
+      - name: tier
+        description: Account tier as of this month.

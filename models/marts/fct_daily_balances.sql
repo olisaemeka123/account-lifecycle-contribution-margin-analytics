@@ -6,15 +6,17 @@
     )
 }}
 
-select 
+select
     d.account_id,
     d.balance_date,
     d.balance_amount,
-    a.current_tier
-from {{ref ('stg_daily_balances')}} as d
-left join {{ref ('stg_accounts')}} as a
-on d.account_id = a.account_id
+    s.tier as current_tier
+from {{ ref('stg_daily_balances') }} as d
 
-{% if is_incremental () %}
-where balance_date > (select max(balance_date) from {{ this }})
+left join {{ ref('int_account_month_status') }} as s
+    on d.account_id = s.account_id
+    and date_trunc(d.balance_date, month) = s.month
+
+{% if is_incremental() %}
+where d.balance_date > (select max(balance_date) from {{ this }})
 {% endif %}

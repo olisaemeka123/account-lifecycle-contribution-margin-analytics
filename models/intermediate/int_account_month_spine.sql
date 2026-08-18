@@ -16,9 +16,9 @@ with months as (
     ) }}
 )
 
-
     select
         a.account_id,
         cast(m.date_month as date) as month
     from {{ ref('stg_accounts') }} as a
     cross join months as m
+    where date_trunc(a.signup_date, month) <= cast(m.date_month as date)
