@@ -1,0 +1,31 @@
+models:
+  - name: int_account_month_spine
+    description: 
+      Complete account & month grid, one row per account per month
+      from Jan 2024 through Mar 2025. Built via dbt_utils.date_spine
+      cross joined against stg_accounts, then filtered to only include
+      months on or after each account's signup_date. This filter was included because
+      accounts were showing cost-allocation charges for months
+      before they even signed up, which distorted contribution margin
+      totals.
+
+      This spine is the shared foundation for int_account_month_fees,
+      int_account_month_activity, and int_account_month_status, so
+      every month,grain intermediate/mart model inherits the
+      signup_date fix from here.
+    columns:
+      - name: account_id
+        description: Foreign key to accounts.
+        tests:
+          - not_null
+      - name: month
+        description: First day of the month, bounded to on or after the account's signup_date.
+        tests:
+          - not_null
+
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - account_id
+              - month
