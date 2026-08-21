@@ -1,0 +1,7 @@
+services:
+  scheduler:
+    volumes:
+      - ..:/usr/local/airflow/alcm_analytics
+  api-server:
+    volumes:
+      - ..:/usr/local/airflow/alcm_analytics
